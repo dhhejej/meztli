@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>FLOWERS PEREZ | Sistema Integral</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <section id="login-screen" class="full-center">
+        <div class="glass-card">
+            <i class="fas fa-seedling logo-icon"></i>
+            <h1>FLOWERS PEREZ</h1>
+            <input type="text" id="l-user" placeholder="Usuario">
+            <input type="password" id="l-pwd" placeholder="Contraseña">
+            <button class="btn-primary" onclick="login()">ENTRAR</button>
+        </div>
+    </section>
+
+    <div id="main-app" class="app-layout hidden">
+        <aside class="sidebar">
+            <div class="sidebar-header">MENÚ PRINCIPAL</div>
+            <nav class="sidebar-nav">
+                <button onclick="showSection('sec-dashboard')"><i class="fas fa-chart-line"></i> Dashboard</button>
+                <hr>
+                <button onclick="showSection('sec-cliente')"><i class="fas fa-user-plus"></i> Clientes</button>
+                <button onclick="showSection('sec-flor')"><i class="fas fa-spa"></i> Flores</button>
+                <button onclick="showSection('sec-material')"><i class="fas fa-tools"></i> Materiales</button>
+                <button onclick="showSection('sec-fumigo')"><i class="fas fa-flask"></i> Fumigos</button>
+                <button onclick="showSection('sec-venta')"><i class="fas fa-shopping-cart"></i> Venta</button>
+                <hr>
+                <p class="nav-label">REPORTES</p>
+                <button onclick="cargarReporte('materiales')"><i class="fas fa-file-alt"></i> Reporte Materiales</button>
+                <button onclick="cargarReporte('fumigos')"><i class="fas fa-file-alt"></i> Reporte Fumigos</button>
+                <button onclick="cargarReporte('ventas')"><i class="fas fa-hand-holding-usd"></i> Reporte Ventas</button>
+                <button onclick="cargarReporte('flores')"><i class="fas fa-warehouse"></i> Reporte Stock</button>
+                <button onclick="cargarReporte('clientes')"><i class="fas fa-users"></i> Lista Clientes</button>
+            </nav>
+            <button class="btn-logout" onclick="location.reload()">Cerrar Sesión</button>
+        </aside>
+
+        <main class="content-area">
+            <div id="welcome-msg" class="welcome-card">
+                <h2>Bienvenido al Sistema Administrativo</h2>
+                <p>Gestione sus flores, insumos y ventas de forma profesional.</p>
+            </div>
+
+            <div id="tool-container" class="hidden">
+                <div id="sec-dashboard" class="form-content card hidden">
+                    <h3>Tendencia de Ventas</h3>
+                    <canvas id="ventasChart"></canvas>
+                </div>
+
+                <div id="sec-flor" class="form-content card hidden">
+                    <h3>Registrar Flor</h3>
+                    <div class="grid-form">
+                        <input type="text" id="f-nombre" placeholder="Nombre">
+                        <input type="text" id="f-tipo" placeholder="Tipo">
+                        <input type="text" id="f-variedad" placeholder="Variedad">
+                        <input type="number" id="f-cant" placeholder="Cantidad Total">
+                    </div>
+                    <button class="btn-save" onclick="guardarFlor()">Guardar en Stock</button>
+                </div>
+
+                <div id="sec-cliente" class="form-content card hidden">
+                    <h3>Registrar Cliente</h3>
+                    <div class="grid-form">
+                        <input type="text" id="c-nombre" placeholder="Nombre">
+                        <input type="number" id="c-contacto" placeholder="Número de Teléfono">
+                    </div>
+                    <button class="btn-save" onclick="enviarFormGenerico('clientes', {nombre:'c-nombre', contacto:'c-contacto'})">Guardar</button>
+                </div>
+
+                <div id="sec-material" class="form-content card hidden">
+                    <h3>Materiales</h3>
+                    <div class="grid-form">
+                        <input type="text" id="m-nombre" placeholder="Nombre">
+                        <input type="number" id="m-cant" placeholder="Cantidad">
+                        <input type="number" id="m-precio" placeholder="Total">
+                    </div>
+                    <button class="btn-save" onclick="enviarFormGenerico('materiales', {nombre:'m-nombre', cantidad:'m-cant', precio:'m-precio'})">Guardar</button>
+                </div>
+
+                <div id="sec-fumigo" class="form-content card hidden">
+                    <h3>Fumigos</h3>
+                    <div class="grid-form">
+                        <input type="text" id="fumi-nombre" placeholder="Nombre">
+                        <input type="number" id="fumi-cant" placeholder="Cantidad">
+                        <input type="number" id="fumi-precio" placeholder="Total">
+                    </div>
+                    <button class="btn-save" onclick="enviarFormGenerico('fumigos', {nombre:'fumi-nombre', cantidad:'fumi-cant', precio:'fumi-precio'})">Guardar</button>
+                </div>
+
+                <div id="sec-venta" class="form-content card hidden">
+                    <h3>Nueva Venta</h3>
+                    <div class="grid-form">
+                        <select id="v-id-cli"></select>
+                        <select id="v-id-flo"></select>
+                        <input type="number" id="v-cant" placeholder="Cantidad">
+                        <input type="number" id="v-total" placeholder="Total $">
+                    </div>
+                    <button class="btn-save" onclick="enviarVenta()">Finalizar Venta</button>
+                </div>
+
+                <div id="sec-reporte" class="form-content card hidden">
+                    <div class="repo-header">
+                        <h3 id="repo-titulo">Reporte</h3>
+                        <input type="text" id="repo-search" placeholder="Buscar..." onkeyup="filtrarTablaReporte()">
+                    </div>
+                    <table>
+                        <thead id="tabla-head"></thead>
+                        <tbody id="tabla-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
